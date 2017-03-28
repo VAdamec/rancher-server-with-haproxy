@@ -1,0 +1,37 @@
+version: '2'
+services:
+  haproxy:
+    build: haproxy/
+    restart: always
+    ports:
+     - 80:80
+     - 3307:3307
+     - 443:443
+     - 9600:9600
+    volumes:
+     - {{ CERTS }}/uicert.pem:/etc/certs/uicert.pem
+  stunnel:
+    build: stunnel/
+    command: /usr/local/bin/stunnel /stunnel/stunnel.conf
+    restart: always
+    links:
+     - haproxy:stunnel
+    volumes:
+     - {{ CERTS }}/stunnel.pem:/stunnel/cert.pem
+  rancher-ui:
+    image: rancher/server:latest
+    command: --advertise-address {{ UIIP }} --advertise-http-port 8080
+    restart: always
+    ports:
+      - "9345:9345"
+    links:
+      - stunnel:stunnel
+    environment:
+      CATTLE_DB_CATTLE_MYSQL_HOST:  {{ DB_HOST }}
+      CATTLE_DB_CATTLE_MYSQL_PORT:  {{ DB_PORT }}
+      CATTLE_DB_CATTLE_MYSQL_NAME:  {{ DB_NAME }}
+      CATTLE_DB_CATTLE_USERNAME:  {{ DB_USER_NAME }}
+      CATTLE_DB_CATTLE_PASSWORD:  {{ DB_USER_PWD }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ CERTS }}/ca.pem:/var/lib/rancher/etc/ssl/ca.crt
