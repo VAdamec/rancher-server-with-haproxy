@@ -1,5 +1,6 @@
 # Info
 - HAProxy terminates SSL requests for Racnher Server (UI)
+ - redirect HTTP to HTTPS
 - Rebalance between multiple Rancher servers if local instance is down
 - Balance over MySQL nodes
 - Handle SSL termination between Rancher server and MySQL nodes
@@ -23,11 +24,17 @@ UIIP: {{ grains['fqdn_ip4']|first }}
 ```
 
 ## Haproxy
-- you need to setup secondary UI server
-- you need to setup IP of mysql hosts
+- haproxy/haproxy.cfg
+  - login/password for haproxy UI admin user
+  - you need to setup other UI server(s) instance
+  - you need to setup IP of mysql host(s)
 
 ## Stunnel
-- expects stunnel running on mysql nodes on port 3307
+- stunnel/stunnel.conf
+  - provides endpoint for MySQL on 3306
+  - send encrypted communication to mysql node (expects stunnel server running on mysql node on port 3307)
+
+### Sample config for MySQL node stunnel
 
 ```
 cert = /etc/stunnel/cert.pem
@@ -47,3 +54,7 @@ connect = 3306
 
 # ToDo
 - use consul + consulate to populate static host definition
+- use vault for credentials
+
+# Credits
+ - Courtney Couch, courtney@moot.it (stunnel container setup)
