@@ -21,6 +21,24 @@ UIIP: {{ grains['fqdn_ip4']|first }}
 - you need to setup secondary UI server
 - you need to setup IP of mysql hosts
 
+## Stunnel
+- expects stunnel running on mysql nodes on port 3307
+
+```
+cert = /etc/stunnel/cert.pem
+key  = /etc/stunnel/cert.key
+
+chroot = /var/tmp/stunnel
+pid = /stunnel.pid
+
+setuid = stunnel
+setgid = stunnel
+client = no
+
+[mysql]
+accept = 3307
+connect = 3306
+```
 
 # ToDo
 - use consul + consulate to populate static host definition
