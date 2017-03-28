@@ -1,4 +1,9 @@
-# Simple Rancher UI with support for balanced MySQL and SSL termination out fo rancher config
+# Info
+- HAProxy terminates SSL requests for Racnher Server (UI)
+- Rebalance between multiple Rancher servers if local instance is down
+- Balance over MySQL nodes
+- Handle SSL termination between Rancher server and MySQL nodes
+- Simplified mysql server maintenance, Rancher server upgrades (well sometimes)
 
 ## Needed files
 - PEM certificate for SSL termination for Rancher UI access
